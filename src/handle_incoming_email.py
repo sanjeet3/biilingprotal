@@ -7,7 +7,14 @@ Created on 16-Jul-2018
 import logging, datetime, StringIO
 
 from src.db import MailData
-from src.pdfminer import pdfparser  
+
+from src.pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter#process_pdf
+from src.pdfminer.pdfpage import PDFPage
+from src.pdfminer.converter import TextConverter
+from src.pdfminer.layout import LAParams
+
+from cStringIO import StringIO
+
 from google.appengine.api import namespace_manager
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 
@@ -49,20 +56,30 @@ class LogSenderHandler(InboundMailHandler):
         
     e.put()
 
-  def read_attchmet(self, payload):
-    logging.info(type(payload)) 
-    logging.info(payload)  
+  def read_attchmet(self, payload): 
     try:
       fp = StringIO.StringIO(payload)
     except Exception, msg:
       logging.error(msg)    
-      return 
-    try:
-      pdf = pdfparser.PDFParser(fp)
-      r = pdf.read_xref()
-      logging.info(r)
-    except Exception, msg:
-      logging.error(msg)    
-      return   
+      return  
+    
+    # PDFMiner boilerplate
+    rsrcmgr = PDFResourceManager()
+    sio = StringIO()
+    codec = 'utf-8'
+    laparams = LAParams()
+    device = TextConverter(rsrcmgr, sio, codec=codec, laparams=laparams)
+    interpreter = PDFPageInterpreter(rsrcmgr, device)
+    for page in PDFPage.get_pages(fp):
+        interpreter.process_page(page)
+    fp.close()
+
+    # Get text from StringIO
+    text = sio.getvalue()
+    logging.info(text)
+    # Cleanup
+    device.close()
+    sio.close()
+    
         
 app = webapp2.WSGIApplication([LogSenderHandler.mapping()], debug=True)
