@@ -1,0 +1,286 @@
+<div class="breadcrumbs ace-save-state" id="breadcrumbs">
+  <ul class="breadcrumb">
+    <li><i class="ace-icon fa fa-file-text"></i> <a href="javascript:">Data Collection
+        Forms</a></li>
+  </ul>
+  <!-- /.breadcrumb -->
+  <div class="nav-search" id="nav-search">
+    <button class="btn btn-success btn-minier" id="add_btn" onclick="showFormDom()">
+      <i class="ace-icon fa fa-plus"></i> Form
+    </button>
+    <button class="btn btn-default btn-minier" id="bck-btn" style="display: none;"
+      onclick="showListDom()">
+      <i class="ace-icon fa fa-arrow-left"></i> Back
+    </button>
+  </div>
+</div>
+<div class="page-content">
+  <div class="row mt-10">
+    <div class="col-xs-12" id="list-dom">
+      <table class="table  table-bordered table-hover">
+        <thead>
+          <tr>
+            <td>Title</td>
+            <td>Description</td>
+            <td>Role</td>
+          </tr>
+        </thead>
+        <tbody id="table_body">
+          {%for e in form_list%}
+          <tr>
+            <td>{{r.title}}</td>
+            <td>{{r.description}}</td>
+            <td>{{r.role_name}}</td>
+          </tr>
+          {%endfor%}
+        </tbody>
+      </table>
+    </div>
+    <div class="col-xs-12" id="form-dom" style="display: none;">
+      <form class="form-horizontal" role="form" id="saveRoleForm">
+        <div class="form-group">
+          <label class="col-sm-1 control-label no-padding-right" for="title">Title</label>
+          <div class="col-sm-4">
+            <input type="text" name="title" id="title" class="form-control input-custom">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-1 control-label no-padding-right" for="description">Description</label>
+          <div class="col-sm-4">
+            <textarea rows="2" class="form-control" name="description"></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-1 control-label no-padding-right" for="role">Role</label>
+          <div class="col-sm-4">
+            <select name="role" id="role" class="form-control"> {%for r in role_list%}
+              <option value="{{r.entityKey}}">{{r.role}}</option> {%endfor%}
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-1 control-label no-padding-right" for="form_category">From
+            Category</label>
+          <div class="col-sm-4">
+            <select name="form_category" id="form_category" class="form-control">
+              <option value="{{FormType.GENERAL}}">Dynamic Form</option>
+              <option value="{{FormType.ACTIVITY}}">Activity Form</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-1 control-label no-padding-right" for="form_category">From
+            Layout</label>
+          <div class="col-sm-4">
+            <select class=" form-control" id="form_layout" name="form_layout">
+              <option value="{{FormLayout.VERTICAL}}">{{FormLayout.VERTICAL}}</option>
+              <option value="{{FormLayout.GRID}}">{{FormLayout.GRID}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-1 control-label no-padding-right" for="form_category">Form
+            Slider</label>
+          <div class="col-sm-4">
+            <select class=" form-control" id="form_slider" name="formslider"
+              onchange="formApp.clearFormSectionFieldData(this)">
+              <option value="{{FormSlider.OFF}}">Off</option>
+              <option value="{{FormSlider.PRODUCT}}">Product</option>
+              <option value="{{FormSlider.PRODUCTCATEGORY}}">Product Category</option>
+              <option value="{{FormSlider.PRODUCTBRAND}}">Product Brand</option>
+              <option value="{{FormSlider.CLIENT}}">Client</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-12 pd-15">
+          <div class="panel panel-default ">
+            <div class="panel-heading">
+              <button class="btn btn-default new-field-btn" type="button"
+                onclick="formApp.addNewFeild()">+ New Feild</button>
+              <button class="btn btn-default new-section-btn" type="button"
+                onclick="formApp.addNewSection()">+ New Section</button>
+            </div>
+            <div class="panel-body" id="form_feild_container" style="min-height: 10em;"></div>
+            <div class="panel-footer">
+              <button class="btn btn-default new-field-btn" type="button"
+                onclick="formApp.addNewFeild()">+ New Feild</button>
+              <button class="btn btn-default new-section-btn" type="button"
+                onclick="formApp.addNewSection()">+ New Section</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-md-offset-1 col-md-9">
+            <button class="btn btn-info btn-minier" type="button" onclick="createForm()">
+              <i class="ace-icon fa fa-check bigger-110"></i> Create Form <i id="save_spin"
+                class="fa fa-spinner fa-spin" style="display: none;"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="form_feild_dom" style="display: none;">
+  <form class="well ovrflow-auto">
+    <div class="form-group text-right cursor">
+      <i class="fa fa-trash-o" onclick="formApp.removeFeild(this)"></i>
+    </div>
+    <div class="form-group pd-bot-2em">
+      <label
+        class="col-lg-2 col-md-2 col-sm-2 col-sm-2 control-label text-right">Title</label>
+      <div class="col-lg-10 col-md-10 col-sm-10 col-sm-10">
+        <input type="text" class="form-control" name="title">
+      </div>
+    </div>
+
+    <div class="form-group pd-bot-2em">
+      <label
+        class="col-lg-2 col-md-2 col-sm-2 col-sm-4 col-xs-12 control-label text-right">Type</label>
+      <div class="col-lg-10 col-md-10 col-sm-10 col-sm-8 col-xs-12">
+        <select class="form-control" name="type"
+          onchange="formApp.feildTypeOnChange(this)">
+          <option value="text">Text</option>
+          <option value="paragraph">Paragraph</option>
+          <option value="number">Number</option>
+          <option value="date">Date</option>
+          <option value="phone">Phone</option>
+          <option value="task">Task</option>
+          <option value="picture">Picture</option>
+          <option value="order">Order</option>
+          <option value="product">Product</option>
+          <option value="geotag">Geo-Tag</option>
+          <option value="signature">Signature</option>
+          <option value="switch">Yes/No</option>
+          <option value="dropdown">Dropdown</option>
+          <option value="filtereddropdown">Filtered Dropdown</option>
+          <option value="listview">List View</option>
+          <option value="filterlistview">Filtered ListView</option>
+          <option value="multichoice">Multi-Choice</option>
+          <option value="radio">Radio-Button</option>
+          <option value="subform">Subform</option>
+          <option value="scanner">Scanner (Advance)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label
+        class="col-lg-2 col-md-2 col-sm-2 col-sm-2 control-label text-right">Validation</label>
+      <div
+        class="col-lg-10 col-md-10 col-sm-10 col-sm-10 validation-dom">
+        <div class="col-sm-12 padding-lr-0 mandatory-validation">
+          <label class="col-lg-3 col-md-3 col-sm-6 col-xs-6">Mandatory</label>
+          <div class="col-lg-9 col-md-9 col-sm-6 col-xs-6">
+            <input type="checkbox" name="mandatory" checked>
+          </div>
+        </div>
+        <div
+          class="default-validation col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-lr-0 mr-bot-7-5x"
+          style="display: none;">
+          <label class="col-lg-3 col-md-3 col-sm-6 col-xs-12">Default</label>
+          <div class="col-lg-9 col-md-9 col-sm-6 col-xs-12">
+            <input type="text" name="defaultvalue" class="form-control"
+              placeholder="Default value" value="">
+          </div>
+        </div>
+        <div class="subform-validation" style="display: none;">
+          <div
+            class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-lr-0">
+            <label class="col-lg-3 col-md-3 col-sm-6 col-xs-12">Sub-Form</label>
+            <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
+              <select name="subform" class="form-control">
+                <option value="">Select</option>  
+              </select>
+            </div>
+          </div>
+          <div
+            class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-lr-0">
+            <label class="col-lg-3 col-md-3 col-sm-6 col-xs-12">Layout</label>
+            <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
+              <select class=" form-control" name="formlayout">
+                <option value="{{FormLayout.VERTICAL}}">{{FormLayout.VERTICAL}}</option>
+                <option value="{{FormLayout.GRID}}">{{FormLayout.GRID}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="number-validation" style="display: none;">
+          <div
+            class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-lr-0">
+            <label class="col-lg-3 col-md-3 col-sm-6 col-xs-12">Min</label>
+            <div class="col-lg-9 col-md-9 col-sm-6 col-xs-12">
+              <input type="number" name="min" class="form-control"
+                placeholder="Min value" value="0">
+            </div>
+          </div>
+          <div
+            class="col-lg-12 col-md-12 col-sm-12 col-xs-12  padding-lr-0 pd-top-7x">
+            <label class="col-lg-3 col-md-3 col-sm-6 col-xs-12">Max</label>
+            <div class="col-lg-9 col-md-9 col-sm-6 col-xs-12 ">
+              <input type="number" name="max" class="form-control"
+                placeholder="Max value" value="100">
+            </div>
+          </div>
+        </div>
+        <div class="phone-validation" style="display: none;">
+          <div
+            class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-lr-0">
+            <label class="col-lg-3 col-md-3 col-sm-6 col-xs-12 ">Prefix</label>
+            <div class="col-lg-9 col-md-9 col-sm-6 col-xs-12 ">
+              <input type="text" name="prefix" class="form-control"
+                placeholder="Prefix" value="">
+            </div>
+          </div>
+          <div
+            class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-lr-0 pd-top-7x">
+            <label class="col-lg-3 col-md-3 col-sm-6 col-xs-12 ">Sufix</label>
+            <div class="col-lg-9 col-md-9 col-sm-6 col-xs-12 ">
+              <input type="text" name="sufix" class="form-control"
+                placeholder="Prefix" value="">
+            </div>
+          </div>
+        </div>
+        <div class="option-validation" style="display: none;">
+          <div
+            class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-lr-0">
+            <label class="col-lg-3 col-md-3 col-sm-3 col-xs-12 ">Option</label>
+            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12 ">
+              <input type="text" name="option" class="form-control"
+                placeholder="Option" value="">
+            </div>
+          </div>
+          <a href="javascript:" class="pd-top-7x"
+            onclick="formApp.addMoreOption(this)"><span
+            class="icons icon-plus"></span> Add More</a>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="form_section_dom" style="display: none;">
+  <form class="well ovrflow-auto section-form">
+    <div class="form-group text-right cursor">
+      <i class="fa fa-trash-o" onclick="formApp.removeFeild(this)"></i>
+    </div>
+    <div class="form-group pd-bot-2em">
+      <label
+        class="col-lg-2 col-md-2 col-sm-2 col-sm-2 control-label text-right">Section
+        Title</label>
+      <div class="col-lg-10 col-md-10 col-sm-10 col-sm-10">
+        <input type="text" class="form-control" name="section">
+      </div>
+    </div>
+
+    <div class="form-group pd-bot-2em">
+
+      <a href="javascript:" class="pd-top-7x pull-right"
+        onclick="formApp.addSectionField(this)"><span
+        class="icons icon-plus"></span> Add Field</a>
+
+    </div>
+
+  </form>
+</div>

@@ -1,0 +1,32 @@
+application: billing-portal
+version: v1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /assets
+  static_dir: src/html/assets  
+  
+- url: /js
+  static_dir: src/html/js 
+  
+- url: /css
+  static_dir: src/html/css  
+
+- url: /img
+  static_dir: src/html/img  
+   
+- url: /.*
+  script: src.main.app 
+  login: required
+ 
+libraries:
+- name: webapp2
+  version: latest
+- name: jinja2
+  version: latest
+- name: pycrypto 
+  version: latest
+- name: endpoints
+  version: 1.0
