@@ -14,7 +14,7 @@ from src.pdfminer.pdfpage import PDFPage
 from src.pdfminer.converter import TextConverter
 from src.pdfminer.layout import LAParams
 
-#from StringIO import StringIO as pySIO
+import StringIO as pySIO
 from cStringIO import StringIO
 from google.appengine.api import namespace_manager
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
@@ -60,12 +60,12 @@ class LogSenderHandler(InboundMailHandler):
     e.put()
 
   def read_attchmet(self, payload): 
-    '''try:
-      fp = StringIO(payload)#pySIO(payload)
+    try:
+      fp = pySIO.StringIO(payload)
       logging.info(fp)
     except Exception, msg:
       logging.error(msg)    
-      return  '''
+      return
     
     # PDFMiner boilerplate
     rsrcmgr = PDFResourceManager()
@@ -75,11 +75,11 @@ class LogSenderHandler(InboundMailHandler):
     device = TextConverter(rsrcmgr, sio, codec=codec, laparams=laparams)
     interpreter = PDFPageInterpreter(rsrcmgr, device)
     try:
-      for page in PDFPage.get_pages(payload):
+      for page in PDFPage.get_pages(fp):
         interpreter.process_page(page)
     except Exception, msg: 
       logging.error(msg)       
-    #fp.close()
+    fp.close()
 
     # Get text from StringIO
     text = sio.getvalue()
