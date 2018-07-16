@@ -61,7 +61,7 @@ class LogSenderHandler(InboundMailHandler):
 
   def read_attchmet(self, payload): 
     try:
-      fp = base64.decodestring(payload)#pySIO(payload)
+      fp = StringIO(payload)#pySIO(payload)
       logging.info(fp)
     except Exception, msg:
       logging.error(msg)    
@@ -74,8 +74,11 @@ class LogSenderHandler(InboundMailHandler):
     laparams = LAParams()
     device = TextConverter(rsrcmgr, sio, codec=codec, laparams=laparams)
     interpreter = PDFPageInterpreter(rsrcmgr, device)
-    for page in PDFPage.get_pages(fp):
+    try:
+      for page in PDFPage.get_pages(fp):
         interpreter.process_page(page)
+    except Exception, msg: 
+      logging.error(msg)       
     fp.close()
 
     # Get text from StringIO
