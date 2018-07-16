@@ -14,7 +14,7 @@ from src.pdfminer.converter import TextConverter
 from src.pdfminer.layout import LAParams
 
 from cStringIO import StringIO
-
+from StringIO import StringIO as pySIO
 from google.appengine.api import namespace_manager
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 
@@ -61,7 +61,7 @@ class LogSenderHandler(InboundMailHandler):
 
   def read_attchmet(self, payload): 
     try:
-      fp = StringIO.StringIO(payload)
+      fp = pySIO(payload)
     except Exception, msg:
       logging.error(msg)    
       return  
