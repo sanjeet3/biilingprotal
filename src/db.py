@@ -107,6 +107,7 @@ class MailData(EndpointsModel):
   received_on = ndb.StringProperty(default='') 
   atachment_name = ndb.StringProperty(default='')
   email_date = ndb.DateProperty()
+  attachment_content = ndb.BlobProperty()
   
   @classmethod
   def get_today_list(cls, dt):

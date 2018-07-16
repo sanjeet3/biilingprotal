@@ -51,17 +51,19 @@ class LogSenderHandler(InboundMailHandler):
     e.email_date = email_date
     if attachment:
       filename, payload = attachment  
+      content = payload.decode()
       e.atachment_name = filename 
+      e.attachment_content = content
       try:
-        self.read_attchmet(payload)
+        self.read_attchmet(content)
       except Exception, msg:
         logging.error(msg)  
         pass    
     e.put()
 
-  def read_attchmet(self, payload): 
+  def read_attchmet(self, content): 
     try:
-      fp = pySIO.StringIO(payload)
+      fp = pySIO.StringIO(content)
       logging.info(fp)
     except Exception, msg:
       logging.error(msg)    
