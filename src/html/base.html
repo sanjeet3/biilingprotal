@@ -188,29 +188,49 @@ to {
           </div>
           <!-- /.page-header -->
           <div class="row">
+            <!-- PAGE CONTENT BEGINS -->
             <div class="col-xs-12">
-              <!-- PAGE CONTENT BEGINS -->
-              <div class="col-xs-12">
-                <table class="table  table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <td>User</td>
-                      <td>Data Collection</td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  {%for u in user_list%}
-                    <tr>
-                      <td>{{u.name}}</td>
-                      <td>{{ range(1, 51) | random }}</td>
-                    </tr>
+              <table class="table  table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <td>Received On</td>
+                    <td>Sender</td>
+                    <td>subject</td>
+                    
+                  </tr>
+                </thead>
+                <tbody>
+                  {%for e in mail_list%}
+                  <tr>
+                    <td>{{e.received_on}}</td> 
+                    <td>{{e.sender}}</td> 
+                    <td>{{e.subject}}</td> 
+                  </tr>
+                  {%else%}
+                  <tr class="text-center"><td colspan="20">No email received today</td></tr>
                   {%endfor%}
-                  </tbody>
-                  
-                </table>
-              </div>
-              <!-- PAGE CONTENT ENDS -->
+                </tbody>
+              </table>
             </div>
+            <div class="col-xs-12 mt-20">
+              <table class="table  table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <td>User</td>
+                    <td>Data Collection</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {%for u in user_list%}
+                  <tr>
+                    <td>{{u.name}}</td>
+                    <td>{{ range(1, 51) | random }}</td>
+                  </tr>
+                  {%endfor%}
+                </tbody>
+              </table>
+            </div>
+            <!-- PAGE CONTENT ENDS -->
             <!-- /.col -->
           </div>
           <!-- /.row -->

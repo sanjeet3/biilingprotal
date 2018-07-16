@@ -96,3 +96,19 @@ class User(EndpointsModel):
       user_dict[u.email] = u
           
     return user_dict  
+
+class MailData(EndpointsModel):
+  ''' Data Store for User '''
+  created_on = ndb.DateTimeProperty(auto_now_add=True)
+  active_status = ndb.BooleanProperty(default=True)
+  sender = ndb.StringProperty(default='')
+  subject = ndb.StringProperty(default='')
+  sender = ndb.StringProperty(default='')
+  received_on = ndb.StringProperty(default='') 
+  atachment_name = ndb.StringProperty(default='')
+  email_date = ndb.DateProperty()
+  
+  @classmethod
+  def get_today_list(cls, dt):
+    return cls.query(cls.email_date==dt).order(-cls.created_on)
+     

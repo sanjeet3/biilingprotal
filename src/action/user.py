@@ -4,14 +4,18 @@ Created on 11-Jul-2018
 @author: Sanjay Saini
 '''
 from src.api.basehandler import Basehandler, SUCCESS, WARNING, json_response
-from src.db import Role, User
+from src.db import Role, User, MailData
 
+import datetime
 
 class Home(Basehandler):
   def get(self):
+    dt = datetime.datetime.now().date()  
+    mail_list = MailData.get_today_list(dt)  
+      
     context = self.get_context
     context['user_list']=User.get_active_user_list()
-    
+    context['mail_list']=mail_list
     template = self.get_jinja2_env.get_template('html/base.html')    
     self.response.out.write(template.render(context))      
 
