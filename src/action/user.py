@@ -4,7 +4,7 @@ Created on 11-Jul-2018
 @author: Sanjay Saini
 '''
 from src.api.basehandler import Basehandler, SUCCESS, WARNING, json_response
-from src.db import Role, User, Form, FormType, FormLayout, FormSlider
+from src.db import Role, User
 
 
 class Home(Basehandler):
@@ -41,17 +41,3 @@ class RoleHandler(Basehandler):
                              SUCCESS, 'Role created')     
     else:
       return json_response(self.response, {}, WARNING, 'Role minimum 3 character')      
-  
-  
-class Forms(Basehandler):
-  def get(self):
-    form_list = Form.get_all_form()
-    role_list = Role.get_role_list().fetch()  
-    context = {'role_list': role_list,
-               'form_list': form_list,
-               'FormType': FormType,
-               'FormLayout': FormLayout,
-               'FormSlider': FormSlider}
-    
-    template = self.get_jinja2_env.get_template('html/form')    
-    self.response.out.write(template.render(context))   

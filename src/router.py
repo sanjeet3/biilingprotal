@@ -12,7 +12,6 @@ from webapp2_extras.routes import RedirectRoute
 __route_list = [
     RedirectRoute(r'/', user.Home, name='Home page', strict_slash=True),
     RedirectRoute(r'/Role', user.RoleHandler, name='RoleHandler', strict_slash=True),
-    RedirectRoute(r'/Forms', user.Forms, name='Forms Handler', strict_slash=True),
     
     #superadmin
     RedirectRoute(r'/superadmin', superadmin.Home, name='superadmin page', strict_slash=True),

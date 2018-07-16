@@ -1,8 +1,14 @@
-application: billing-portal
-version: v1
 runtime: python27
 api_version: 1
 threadsafe: true
+
+# [START bounce_service]
+# [START mail_service]
+inbound_services:
+- mail
+# [END mail_service]
+- mail_bounce
+# [END bounce_service]
 
 handlers:
 - url: /assets
@@ -16,6 +22,10 @@ handlers:
 
 - url: /img
   static_dir: src/html/img  
+
+- url: /_ah/mail/.+
+  script: src.handle_incoming_email.app
+  login: admin
    
 - url: /.*
   script: src.main.app 
