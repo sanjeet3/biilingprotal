@@ -4,7 +4,8 @@ Created on 16-Jul-2018
 @author: Sanjay Saini
 '''
 
-import logging, datetime, StringIO
+import logging, datetime
+import base64
 
 from src.db import MailData
 
@@ -14,7 +15,7 @@ from src.pdfminer.converter import TextConverter
 from src.pdfminer.layout import LAParams
 
 from cStringIO import StringIO
-from StringIO import StringIO as pySIO
+#from StringIO import StringIO as pySIO
 from google.appengine.api import namespace_manager
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 
@@ -60,7 +61,8 @@ class LogSenderHandler(InboundMailHandler):
 
   def read_attchmet(self, payload): 
     try:
-      fp = pySIO(payload)
+      fp = base64.decodestring(payload)#pySIO(payload)
+      logging.info(fp)
     except Exception, msg:
       logging.error(msg)    
       return  
