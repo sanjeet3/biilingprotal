@@ -4,10 +4,10 @@ Created on 16-Jul-2018
 @author: Sanjay Saini
 '''
 
-import logging, datetime
+import logging, datetime, StringIO
 
 from src.db import MailData
-
+from src.pdfminer import pdfparser  
 from google.appengine.api import namespace_manager
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 
@@ -35,7 +35,8 @@ class LogSenderHandler(InboundMailHandler):
           
     a = date.split(' ')  
     email_date = datetime.datetime.strptime('%s%s%s'%(a[1],a[2],a[3]),'%d%b%Y')
-    #namespace_manager.set_namespace()    
+    domain = to.split('@')[0]
+    namespace_manager.set_namespace(domain)    
     e = MailData()
     e.sender = sender
     e.subject = subject
@@ -46,11 +47,22 @@ class LogSenderHandler(InboundMailHandler):
       self.read_attchmet(payload)
       e.atachment_name = filename 
         
-    #e.put()
+    e.put()
 
   def read_attchmet(self, payload):
     logging.info(type(payload)) 
     logging.info(payload)  
-          
+    try:
+      fp = StringIO.StringIO(payload)
+    except Exception, msg:
+      logging.error(msg)    
+      return 
+    try:
+      pdf = pdfparser.PDFParser(fp)
+      r = pdf.read_xref()
+      logging.info(r)
+    except Exception, msg:
+      logging.error(msg)    
+      return   
         
 app = webapp2.WSGIApplication([LogSenderHandler.mapping()], debug=True)
