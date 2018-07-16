@@ -33,7 +33,6 @@ class LogSenderHandler(InboundMailHandler):
     
     logging.info('To: %s' %(to)) 
     logging.info('subject: %s' %(subject)) 
-    logging.info(attachments)  
         
     for atch in attachments: 
       attachment = atch
@@ -54,8 +53,8 @@ class LogSenderHandler(InboundMailHandler):
       e.atachment_name = filename 
       try:
         self.read_attchmet(payload)
-      except Exception, e:
-        logging.error(e)  
+      except Exception, msg:
+        logging.error(msg)  
         pass    
     e.put()
 
