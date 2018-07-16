@@ -6,12 +6,14 @@ Created on 05-Apr-2017
 
 import os
 import sys
+import logging
 
 def namespace_manager_default_namespace_for_request():
   """ Binding namespace to be used for a request 
   """
   url_extension_list = str(os.environ['SERVER_NAME']).split(".")
   namespace = url_extension_list[1] if url_extension_list[0].lower() in ['www'] else url_extension_list[0]
+  logging.info(namespace)
   return namespace
   #return 'superadmin'
   

@@ -78,7 +78,12 @@ class Basehandler(webapp2.RequestHandler):
     self.gmailuser = users.get_current_user()
     unauthorize=True
     if self.gmailuser:
-      self.user = User.get_active_user_by_email(self.gmailuser.email())
+      email = self.gmailuser.email()  
+      domain = namespace_manager.get_namespace()
+      logging.info(domain)
+      logging.info(email)
+      self.user = User.get_active_user_by_email(email)
+      logging.info(self.user)
       if self.user and self.user.system_owner:  
         unauthorize = False   
     if unauthorize:
