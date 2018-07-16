@@ -51,9 +51,12 @@ class LogSenderHandler(InboundMailHandler):
     e.email_date = email_date
     if attachment:
       filename, payload = attachment  
-      self.read_attchmet(payload)
       e.atachment_name = filename 
-        
+      try:
+        self.read_attchmet(payload)
+      except Exception, e:
+        logging.error(e)  
+        pass    
     e.put()
 
   def read_attchmet(self, payload): 

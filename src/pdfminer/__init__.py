@@ -1,4 +1,6 @@
-#!/usr/bin/env python
-__version__ = '20100424'
 
-if __name__ == '__main__': print __version__
+# -*- coding: utf-8 -*-
+__version__ = '20170720'
+
+if __name__ == '__main__':
+    print (__version__)

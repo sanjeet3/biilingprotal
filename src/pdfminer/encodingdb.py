@@ -1,21 +1,24 @@
-#!/usr/bin/env python
 
 import re
-from psparser import PSLiteral
-from glyphlist import charname2unicode
-from latin_enc import ENCODING
+from .psparser import PSLiteral
+from .glyphlist import glyphname2unicode
+from .latin_enc import ENCODING
+
+import six # Python 2+3 compatibility
+
+STRIP_NAME = re.compile(r'[0-9]+')
 
 
 ##  name2unicode
 ##
-STRIP_NAME = re.compile(r'[0-9]+')
 def name2unicode(name):
     """Converts Adobe glyph names to Unicode numbers."""
-    if name in charname2unicode:
-        return charname2unicode[name]
+    if name in glyphname2unicode:
+        return glyphname2unicode[name]
     m = STRIP_NAME.search(name)
-    if not m: raise KeyError(name)
-    return int(m.group(0))
+    if not m:
+        raise KeyError(name)
+    return six.unichr(int(m.group(0)))
 
 
 ##  EncodingDB
@@ -26,19 +29,23 @@ class EncodingDB(object):
     mac2unicode = {}
     win2unicode = {}
     pdf2unicode = {}
-    for (name,std,mac,win,pdf) in ENCODING:
-        c = unichr(name2unicode(name))
-        if std: std2unicode[std] = c
-        if mac: mac2unicode[mac] = c
-        if win: win2unicode[win] = c
-        if pdf: pdf2unicode[pdf] = c
+    for (name, std, mac, win, pdf) in ENCODING:
+        c = name2unicode(name)
+        if std:
+            std2unicode[std] = c
+        if mac:
+            mac2unicode[mac] = c
+        if win:
+            win2unicode[win] = c
+        if pdf:
+            pdf2unicode[pdf] = c
 
     encodings = {
-      'StandardEncoding': std2unicode,
-      'MacRomanEncoding': mac2unicode,
-      'WinAnsiEncoding': win2unicode,
-      'PDFDocEncoding': pdf2unicode,
-      }
+        'StandardEncoding': std2unicode,
+        'MacRomanEncoding': mac2unicode,
+        'WinAnsiEncoding': win2unicode,
+        'PDFDocEncoding': pdf2unicode,
+    }
 
     @classmethod
     def get_encoding(klass, name, diff=None):
@@ -51,7 +58,7 @@ class EncodingDB(object):
                     cid = x
                 elif isinstance(x, PSLiteral):
                     try:
-                        cid2unicode[cid] = unichr(name2unicode(x.name))
+                        cid2unicode[cid] = name2unicode(x.name)
                     except KeyError:
                         pass
                     cid += 1
