@@ -10,6 +10,12 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: MailData
+  properties:
+  - name: email_date
+  - name: created_on
+    direction: desc
+
 - kind: User
   properties:
   - name: active_status
