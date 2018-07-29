@@ -25,7 +25,6 @@ from google.appengine.ext import ndb
 
 class LogSenderHandler(InboundMailHandler):
   def receive(self, mail_message):
-    logging.debug(mail_message)  
     attachment, filename, payload=None, '', None
     logging.info("Received a message from: " + mail_message.sender)
     sender = mail_message.sender
@@ -51,17 +50,16 @@ class LogSenderHandler(InboundMailHandler):
     e.subject = subject
     e.received_on = ' '.join(a[:4])
     e.email_date = email_date
-    if attachment:  
-      filename, payload = attachment
-      content = base64.b64decode(payload.decode())  
-      #content = payload.decode()
+    if attachment:
+      filename, payload = attachment  
+      content = payload.decode()
       e.atachment_name = filename 
       e.attachment_content = content
       try:
         self.read_attchmet(content)
       except Exception, msg:
         logging.error(msg)  
-        pass
+        pass    
     e.put()
 
   def read_attchmet(self, content): 
@@ -115,7 +113,7 @@ class TestPDF(webapp2.RequestHandler):
     # PDFMiner boilerplate
     rsrcmgr = PDFResourceManager()
     sio = StringIO()
-    codec = 'utf-8'
+    codec = 'ascii'
     laparams = LAParams()
     device = TextConverter(rsrcmgr, sio, codec=codec, laparams=laparams)
     interpreter = PDFPageInterpreter(rsrcmgr, device)
