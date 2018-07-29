@@ -15,7 +15,8 @@ from src.pdfminer.converter import TextConverter
 from src.pdfminer.layout import LAParams
 
 import StringIO as pySIO
-from cStringIO import StringIO
+from StringIO import StringIO
+#from cStringIO import StringIO
 from google.appengine.api import namespace_manager
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 
@@ -85,6 +86,7 @@ class LogSenderHandler(InboundMailHandler):
     fp.close()
 
     # Get text from StringIO
+    logging.info(sio.len)
     text = sio.getvalue()
     logging.info(text)
     # Cleanup
