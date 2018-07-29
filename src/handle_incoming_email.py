@@ -94,9 +94,6 @@ class LogSenderHandler(InboundMailHandler):
     sio.close()
     
 
-from pdfminer.pdfparser import PDFParser
-from pdfminer.pdfdocument import PDFDocument
-
 class TestPDF(webapp2.RequestHandler):
   def get(self):    
     kay = 'ahRqfmJpbGxpbmctcGRmLXBvcnRhbHIVCxIITWFpbERhdGEYgICAoKSVggoMogEEY3NwbA'
@@ -109,37 +106,31 @@ class TestPDF(webapp2.RequestHandler):
 
   def read_attchmet(self, content): 
     try:
-      memory_file = pySIO.StringIO(content)
-      logging.info(memory_file)
+      fp = pySIO.StringIO(base64.b64decode(content))#.decode('UTF-8'))
+      logging.info(fp)
     except Exception, msg:
       logging.error(msg)    
       return
-    # Create a PDF parser object associated with the StringIO object
-    parser = PDFParser(memory_file)
-    # Create a PDF document object that stores the document structure
-    document = PDFDocument(parser)
-    # Define parameters to the PDF device objet 
-    rsrcmgr = PDFResourceManager()
-    retstr = StringIO()
-    laparams = LAParams()
-    codec = 'utf-8'
-
-    # Create a PDF device object
-    device = TextConverter(rsrcmgr, retstr, codec = codec, laparams = laparams)
-
-    # Create a PDF interpreter object
-    interpreter = PDFPageInterpreter(rsrcmgr, device)
-
-    # Process each page contained in the document
-    for page in PDFPage.create_pages(document):
-      interpreter.process_page(page)
-      data =  retstr.getvalue()
-      logging.info(data)
-      logging.info(retstr.len)
-      
-    retstr.close()
-    memory_file.close()
-    device.close() 
     
+    # PDFMiner boilerplate
+    rsrcmgr = PDFResourceManager()
+    sio = StringIO()
+    codec = 'ascii'
+    laparams = LAParams()
+    device = TextConverter(rsrcmgr, sio, codec=codec, laparams=laparams)
+    interpreter = PDFPageInterpreter(rsrcmgr, device)
+    try:
+      for page in PDFPage.get_pages(fp):
+        interpreter.process_page(page)
+    except Exception, msg: 
+      logging.error(msg)       
+    fp.close()
+
+    # Get text from StringIO
+    text = sio.getvalue()
+    logging.info(text)
+    # Cleanup
+    device.close()
+    sio.close()
     
 app = webapp2.WSGIApplication([LogSenderHandler.mapping()], debug=True)
