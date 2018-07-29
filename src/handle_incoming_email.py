@@ -25,6 +25,7 @@ from google.appengine.ext import ndb
 
 class LogSenderHandler(InboundMailHandler):
   def receive(self, mail_message):
+    logging.debug(mail_message)  
     attachment, filename, payload=None, '', None
     logging.info("Received a message from: " + mail_message.sender)
     sender = mail_message.sender
@@ -50,18 +51,16 @@ class LogSenderHandler(InboundMailHandler):
     e.subject = subject
     e.received_on = ' '.join(a[:4])
     e.email_date = email_date
-    if attachment:
-      msg = attachment.encoding  
-      logging.info(msg)  
+    if attachment:  
       filename, payload = attachment  
-      content = payload.decode()
+      content = payload.decode('base64')
       e.atachment_name = filename 
       e.attachment_content = content
-      '''try:
+      try:
         self.read_attchmet(content)
       except Exception, msg:
         logging.error(msg)  
-        pass  '''  
+        pass
     e.put()
 
   def read_attchmet(self, content): 
