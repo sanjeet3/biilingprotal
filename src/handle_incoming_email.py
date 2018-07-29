@@ -53,7 +53,7 @@ class LogSenderHandler(InboundMailHandler):
     e.email_date = email_date
     if attachment:  
       filename, payload = attachment
-      content = base64.b64decode(payload)  
+      content = base64.b64decode(payload.decode())  
       #content = payload.decode()
       e.atachment_name = filename 
       e.attachment_content = content
