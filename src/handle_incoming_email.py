@@ -113,7 +113,7 @@ class TestPDF(webapp2.RequestHandler):
     # PDFMiner boilerplate
     rsrcmgr = PDFResourceManager()
     sio = StringIO()
-    codec = 'ascii'
+    codec = 'utf-8'
     laparams = LAParams()
     device = TextConverter(rsrcmgr, sio, codec=codec, laparams=laparams)
     interpreter = PDFPageInterpreter(rsrcmgr, device)
