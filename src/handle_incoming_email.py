@@ -64,6 +64,7 @@ class LogSenderHandler(InboundMailHandler):
 
   def read_attchmet(self, content): 
     try:
+      content = content.encode('utf-8')  
       fp = pySIO.StringIO(content)
       logging.info(fp)
     except Exception, msg:
