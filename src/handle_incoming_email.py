@@ -106,7 +106,7 @@ class TestPDF(webapp2.RequestHandler):
 
   def read_attchmet(self, content): 
     try:
-      fp = pySIO.StringIO(base64.b64decode(content))#.decode('UTF-8'))
+      fp = pySIO.StringIO(base64.b64decode(content).decode('UTF-8'))
       logging.info(fp)
     except Exception, msg:
       logging.error(msg)    
