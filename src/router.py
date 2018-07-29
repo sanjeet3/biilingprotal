@@ -5,6 +5,7 @@ Created on 11-Jul-2018
 '''
 from src.action import user
 from src.action import superadmin
+from src.handle_incoming_email import TestPDF
 
 
 from webapp2_extras.routes import RedirectRoute
@@ -18,6 +19,9 @@ __route_list = [
     RedirectRoute(r'/superadmin/AddDomain',  superadmin.AddDomain, name='superadmin AddDomain page', strict_slash=True),
     RedirectRoute(r'/superadmin/AddUserAccount',  superadmin.AddUserAccount, name='superadmin user account page', strict_slash=True),
     RedirectRoute(r'/superadmin/GetDaomainData',  superadmin.GetDaomainData, name='superadmin GetDaomainData', strict_slash=True),
+   
+    #TEST
+    RedirectRoute(r'/test/pdf', TestPDF, name='TestPDF', strict_slash=True),
    
     ]
 

@@ -20,6 +20,7 @@ from google.appengine.api import namespace_manager
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 
 import webapp2
+from google.appengine.ext import ndb
 
 
 class LogSenderHandler(InboundMailHandler):
@@ -90,5 +91,44 @@ class LogSenderHandler(InboundMailHandler):
     device.close()
     sio.close()
     
-        
+
+class TestPDF(webapp2.RequestHandler):
+  def get(self):    
+    kay = 'ahRqfmJpbGxpbmctcGRmLXBvcnRhbHIVCxIITWFpbERhdGEYgICAoKSVggoMogEEY3NwbA'
+    e = MailData()
+    e = ndb.Key(urlsafe=kay).get()
+    self.read_attchmet(e.attachment_content)
+    
+    
+    self.response.out.write('<h1>Testing')    
+
+  def read_attchmet(self, content): 
+    try:
+      fp = pySIO.StringIO(content)
+      logging.info(fp)
+    except Exception, msg:
+      logging.error(msg)    
+      return
+    
+    # PDFMiner boilerplate
+    rsrcmgr = PDFResourceManager()
+    sio = StringIO()
+    codec = 'utf-8'
+    laparams = LAParams()
+    device = TextConverter(rsrcmgr, sio, codec=codec, laparams=laparams)
+    interpreter = PDFPageInterpreter(rsrcmgr, device)
+    try:
+      for page in PDFPage.get_pages(fp):
+        interpreter.process_page(page)
+    except Exception, msg: 
+      logging.error(msg)       
+    fp.close()
+
+    # Get text from StringIO
+    text = sio.getvalue()
+    logging.info(text)
+    # Cleanup
+    device.close()
+    sio.close()
+    
 app = webapp2.WSGIApplication([LogSenderHandler.mapping()], debug=True)

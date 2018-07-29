@@ -27,6 +27,9 @@ handlers:
   script: src.handle_incoming_email.app
   login: admin
    
+- url: /test/.*
+  script: src.main.app  
+  
 - url: /.*
   script: src.main.app 
   login: required
