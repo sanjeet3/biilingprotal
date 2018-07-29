@@ -170,7 +170,7 @@ class PDFConverter(PDFLayoutAnalyzer):
                 self.outfp_binary = False
             else:
                 try:
-                    self.outfp.write(u"é")
+                    self.outfp.write(u"e")
                     self.outfp_binary = False
                 except TypeError:
                     self.outfp_binary = True
